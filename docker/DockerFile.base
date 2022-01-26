@@ -1,0 +1,22 @@
+FROM ubuntu:18.04
+MAINTAINER Berin Spahovic
+
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+RUN export PYTHONPATH="/app"
+
+RUN echo "Creating config folder ..."
+RUN mkdir /config
+
+RUN apt-get update -y
+RUN apt-get install -y curl lsof python3-pip  wait-for-it
+
+RUN echo 'export PATH=/opt/miniconda/bin:$PATH' > /etc/profile.d/conda.sh && \
+    curl -o ~/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+    /bin/bash ~/miniconda.sh -b -p /opt/miniconda && \
+    rm ~/miniconda.sh
+
+
+COPY requirements.yml /config
+
+RUN /opt/miniconda/bin/conda env create -f /config/requirements.yml
+ENV PATH /opt/miniconda/envs/news-scraper/bin:$PATH

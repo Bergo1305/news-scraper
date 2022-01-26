@@ -1,0 +1,15 @@
+name: news-scraper
+
+dependencies:
+  - python=3.10
+  - pip
+  - requests=2.27.1
+  - pip:
+      - gunicorn==20.1.0
+      - celery==5.2.3
+      - django==3.2.11
+      - django_celery_beat==2.2.1
+      - jsonschema==3.0.1
+      - djangorestframework==3.13.1
+      - psycopg2-binary==2.9.3
+      - django-createsuperuserwithpassword==2.0.0
