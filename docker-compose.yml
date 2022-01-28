@@ -53,11 +53,13 @@ services:
           - api.svc.cluster.local
     depends_on:
       - postgresdb
+      - worker
 
   nginx:
     build:
       context: .
       dockerfile: docker/nginx/Dockerfile
+    container_name: nginx
     volumes:
       - static:/app/data
     depends_on:
@@ -72,11 +74,10 @@ services:
     build:
       context: .
       dockerfile: docker/worker/Dockerfile
-    container_name: "celery-worker"
+    container_name: worker
     env_file:
       - ./envs/variables.env
     depends_on:
-      - api
       - redis
     command: "celery -A news_scraper worker -l info"
     networks:
@@ -87,7 +88,7 @@ services:
       context: .
       dockerfile: docker/scheduler/Dockerfile
 
-    container_name: "celery-scheduler"
+    container_name: scheduler
     command: [ "python3", '-m', "celery", "-A", "news_scraper", "beat", "-l", "info", "--scheduler",
                "django_celery_beat.schedulers:DatabaseScheduler" ]
     depends_on:

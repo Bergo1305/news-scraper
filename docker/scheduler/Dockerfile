@@ -7,5 +7,10 @@ RUN pip3 install --user redis==4.1.1
 RUN pip3 install xmltodict==0.12.0
 
 COPY news_scraper/ /app/news_scraper
+COPY docker/scheduler/entrypoint.sh /app
 COPY manage.py /app
 WORKDIR /app
+
+RUN chmod +x /app/entrypoint.sh
+ENTRYPOINT ["/app/entrypoint.sh"]
+
