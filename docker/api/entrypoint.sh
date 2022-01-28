@@ -16,4 +16,6 @@ python3 manage.py createsuperuserwithpassword \
 
 python manage.py collectstatic --no-input --clear
 
+python manage.py test
+
 exec "$@"

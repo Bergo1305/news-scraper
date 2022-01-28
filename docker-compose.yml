@@ -66,6 +66,7 @@ services:
       - "8081:80"
     networks:
       app-tier:
+    restart: "on-failure"
 
   worker:
     build:
@@ -75,6 +76,7 @@ services:
     env_file:
       - ./envs/variables.env
     depends_on:
+      - api
       - redis
     command: "celery -A news_scraper worker -l info"
     networks:

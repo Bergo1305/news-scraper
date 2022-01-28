@@ -140,23 +140,39 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': int(os.environ.get('PAGE_SIZE', 10)),
     'PAGE_SIZE_QUERY_PARAM': os.environ.get('PAGE_SIZE_QUERY_PARAM', 'limit'),
-    'MAX_PAGE_SIZE': int(os.environ.get('MAX_PAGE_SIZE', 1000))
+    'MAX_PAGE_SIZE': int(os.environ.get('MAX_PAGE_SIZE', 100))
 }
 
 SCRAPING_URL = os.environ.get('SCRAPING_URL')
-SYMBOL_TYPES = [str(_sym) for _sym in os.environ.get('SYMBOL_TYPES').split(',')]
+DEFAULT_SYMBOL_TYPES = "AAPL,TWTR,GC=F(GOLD),INTC"
+SYMBOL_TYPES = [str(_sym) for _sym in os.environ.get('SYMBOL_TYPES', DEFAULT_SYMBOL_TYPES).split(',')]
 DEFAULT_QUERY_PARAMS = {"region": "US", "lang": "en-US"}
 
 from celery.schedules import crontab
 
 import news_scraper.tasks
+
+JOB_TIME = os.environ.get('JOB_DEFAULT_PERIODIC_TIME')
+time_range = JOB_TIME[-1]
+time = int(JOB_TIME[:-1])
+
+scheduler = None
+
+if time_range == "m":
+    scheduler = crontab(minute=time)
+elif time_range == "h":
+    scheduler = crontab(hour=time)
+elif time_range == "y":
+    scheduler = crontab(month_of_year=time)
+elif time_range == "d":
+    scheduler = crontab(day_of_week=time)
+else:
+    scheduler = crontab(day_of_month=time)
+
+
 CELERY_BEAT_SCHEDULE = {
     "collect_data": {
         "task": "news_scraper.tasks.collect_data",
-        "schedule": crontab(minute="*/10"),
+        "schedule": scheduler,
     },
 }
-
-
-
-
