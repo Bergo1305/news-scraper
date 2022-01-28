@@ -41,9 +41,9 @@ This endpoint will be 400 status - BadRequest.
 
 ## Admin interface - scheduling tasks
 When all services are up and running, period task('collect_data') is automatically scheduled. 
-This task is scheduled every 10 minutes(default).
-
-At http://localhost:8081/admin/django_celery_beat/periodictask/ as an admin, you can add, delete, scheduled any tasks. 
+This task is scheduled every 1 minute(default).
+If you want to change this behavior go to http://localhost:8081/admin/django_celery_beat/periodictask/ as an admin.
+Here, you can add, delete, scheduled any tasks. 
 Interface should look like this:
 
 ![My Diagram Image](data/admin.png)
